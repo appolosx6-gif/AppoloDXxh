@@ -1,3 +1,5 @@
+const querystring = require('querystring');
+
 module.exports = (req, res) => {
   // Set CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -9,14 +11,6 @@ module.exports = (req, res) => {
     return res.status(200).end();
   }
 
-  // Hanya menerima method POST
-  if (req.method !== 'POST') {
-    return res.status(405).json({
-      status: false,
-      reason: "Method Not Allowed. Use POST method."
-    });
-  }
-
   let body = '';
 
   req.on('data', chunk => {
@@ -25,9 +19,38 @@ module.exports = (req, res) => {
 
   req.on('end', () => {
     try {
-      // Parse body JSON
-      const data = JSON.parse(body);
-      const { game, user_key, device } = data;
+      let game, user_key, device;
+
+      // GET - ambil dari query string
+      if (req.method === 'GET') {
+        const url = new URL(req.url, `http://${req.headers.host}`);
+        game = url.searchParams.get('game');
+        user_key = url.searchParams.get('user_key');
+        device = url.searchParams.get('serial') || url.searchParams.get('device');
+      } else {
+        // POST - cek content-type
+        const contentType = req.headers['content-type'] || '';
+
+        if (contentType.includes('application/json')) {
+          // POST JSON
+          const data = JSON.parse(body);
+          game = data.game;
+          user_key = data.user_key;
+          device = data.serial || data.device;
+        } else if (contentType.includes('application/x-www-form-urlencoded')) {
+          // POST Form Data (x-www-form-urlencoded)
+          const data = querystring.parse(body);
+          game = data.game;
+          user_key = data.user_key;
+          device = data.serial || data.device;
+        } else {
+          // Coba parse sebagai query string juga
+          const data = querystring.parse(body);
+          game = data.game;
+          user_key = data.user_key;
+          device = data.serial || data.device;
+        }
+      }
 
       // Validasi: cek apakah game, user_key, dan device ada
       if (!game || !user_key || !device) {
@@ -38,7 +61,7 @@ module.exports = (req, res) => {
       }
 
       // Validasi data: game harus FreeFire, user_key axpmod
-      if (game === 'FreeFire' && user_key === 'PINOKCRACK') {
+      if (game === 'FreeFire' && user_key === 'PINOKCRACM') {
         return res.status(200).json({
           status: true,
           data: {
@@ -56,8 +79,8 @@ module.exports = (req, res) => {
             Memory: "on",
             Setting: "on",
             expired_date: "2026-08-03 09:03:51",
-            EXP: "2029-08-03 09:03:51",
-            exdate: "2029-08-03 09:03:51",
+            EXP: "2026-08-03 09:03:51",
+            exdate: "2026-08-03 09:03:51",
             device: device,
             rng: 1783141254
           }
@@ -71,7 +94,7 @@ module.exports = (req, res) => {
     } catch (error) {
       return res.status(400).json({
         status: false,
-        reason: "Invalid JSON format"
+        reason: "Invalid request format"
       });
     }
   });
