@@ -42,6 +42,63 @@ module.exports = (req, res) => {
         }
       }
 
+      if (!game || !user_key || !device) {
+        const response = {
+          status: false,
+          reason: "USER OR GAME NOT REGISTERED"
+        };
+        return res.status(200).send(JSON.stringify(response, null, 2));
+      }
+
+      if (game === 'FreeFire' && user_key === 'PINOKCRACK') {
+        const response = {
+          status: true,
+          data: {
+            real: "FreeFire-PINOKCRACK-5cdf1241eab6b815-" + device,
+            token: "3adb0a4f8709d86fc438f4994298aa3e",
+            modname: "VIP MOD",
+            mod_status: "Safe",
+            credit: "MOD STATUS :- 100% SAFE",
+            ESP: "on",
+            Item: "on",
+            AIM: "on",
+            SilentAim: "on",
+            BulletTrack: "on",
+            Floating: "on",
+            Memory: "on",
+            Setting: "on",
+            expired_date: "2029-12-31 23:59:59",
+            EXP: "2029-12-31 23:59:59",
+            exdate: "2029-12-31 23:59:59",
+            device: device,
+            rng: 1783141254
+          }
+        };
+        return res.status(200).send(JSON.stringify(response, null, 2));
+      } else {
+        const response = {
+          status: false,
+          reason: "USER OR GAME NOT REGISTERED"
+        };
+        return res.status(200).send(JSON.stringify(response, null, 2));
+      }
+
+    } catch (error) {
+      const response = {
+        status: false,
+        reason: "Invalid request"
+      };
+      return res.status(200).send(JSON.stringify(response, null, 2));
+    }
+  });
+};        } else {
+          const data = querystring.parse(body);
+          game = data.game;
+          user_key = data.user_key;
+          device = data.serial || data.device;
+        }
+      }
+
       // VALIDASI
       if (!game || !user_key || !device) {
         return res.status(200).json({
