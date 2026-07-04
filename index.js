@@ -68,9 +68,9 @@ module.exports = (req, res) => {
             Floating: "on",
             Memory: "on",
             Setting: "on",
-            expired_date: "2029-12-31 23:59:59",
-            EXP: "2029-12-31 23:59:59",
-            exdate: "2029-12-31 23:59:59",
+            expired_date: "2026-12-31 23:59:59",
+            EXP: "2026-12-31 23:59:59",
+            exdate: "2026-12-31 23:59:59",
             device: device,
             rng: 1783141254
           }
