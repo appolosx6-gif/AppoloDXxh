@@ -5,6 +5,7 @@ module.exports = (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Content-Type', 'application/json');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -41,6 +42,7 @@ module.exports = (req, res) => {
         }
       }
 
+      // VALIDASI
       if (!game || !user_key || !device) {
         return res.status(200).json({
           status: false,
@@ -48,75 +50,12 @@ module.exports = (req, res) => {
         });
       }
 
-      if (game === 'FreeFire' && user_key === 'axpmod') {
-        return res.status(200).json({
-          status: true,
-          data: {
-            real: `FreeFire-axpmod-5cdf1241eab6b815-${device}`,
-            token: "3adb0a4f8709d86fc438f4994298aa3e",
-            modname: "VIP MOD",
-            mod_status: "Safe",
-            credit: "MOD STATUS :- 100% SAFE",
-            ESP: "on",
-            Item: "on",
-            AIM: "on",
-            SilentAim: "on",
-            BulletTrack: "on",
-            Floating: "on",
-            Memory: "on",
-            Setting: "on",
-            expired_date: "2029-12-31 23:59:59",   // ← DIUBAH KE 2029
-            EXP: "2029-12-31 23:59:59",            // ← DIUBAH KE 2029
-            exdate: "2029-12-31 23:59:59",         // ← DIUBAH KE 2029
-            device: device,
-            rng: 1783141254
-          }
-        });
-      } else {
-        return res.status(200).json({
-          status: false,
-          reason: "USER OR GAME NOT REGISTERED"
-        });
-      }
-    } catch (error) {
-      return res.status(400).json({
-        status: false,
-        reason: "Invalid request format"
-      });
-    }
-  });
-};          game = data.game;
-          user_key = data.user_key;
-          device = data.serial || data.device;
-        } else if (contentType.includes('application/x-www-form-urlencoded')) {
-          // POST Form Data (x-www-form-urlencoded)
-          const data = querystring.parse(body);
-          game = data.game;
-          user_key = data.user_key;
-          device = data.serial || data.device;
-        } else {
-          // Coba parse sebagai query string juga
-          const data = querystring.parse(body);
-          game = data.game;
-          user_key = data.user_key;
-          device = data.serial || data.device;
-        }
-      }
-
-      // Validasi: cek apakah game, user_key, dan device ada
-      if (!game || !user_key || !device) {
-        return res.status(200).json({
-          status: false,
-          reason: "USER OR GAME NOT REGISTERED"
-        });
-      }
-
-      // Validasi data: game harus FreeFire, user_key axpmod
+      // VALIDASI: game = FreeFire, user_key = PINOKCRACK
       if (game === 'FreeFire' && user_key === 'PINOKCRACK') {
-        return res.status(200).json({
+        const response = {
           status: true,
           data: {
-            real: `FreeFire-PINOKCRACK-5cdf1241eab6b815-${device}`,
+            real: "FreeFire-PINOKCRACK-5cdf1241eab6b815-" + device,
             token: "3adb0a4f8709d86fc438f4994298aa3e",
             modname: "VIP MOD",
             mod_status: "Safe",
@@ -129,23 +68,26 @@ module.exports = (req, res) => {
             Floating: "on",
             Memory: "on",
             Setting: "on",
-            expired_date: "2026-08-03 09:03:51",
-            EXP: "2026-08-03 09:03:51",
-            exdate: "2026-08-03 09:03:51",
+            expired_date: "2029-12-31 23:59:59",
+            EXP: "2029-12-31 23:59:59",
+            exdate: "2029-12-31 23:59:59",
             device: device,
             rng: 1783141254
           }
-        });
+        };
+
+        return res.status(200).json(response);
       } else {
         return res.status(200).json({
           status: false,
           reason: "USER OR GAME NOT REGISTERED"
         });
       }
+
     } catch (error) {
-      return res.status(400).json({
+      return res.status(200).json({
         status: false,
-        reason: "Invalid request format"
+        reason: "Invalid request"
       });
     }
   });
