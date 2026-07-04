@@ -1,0 +1,11 @@
+{
+  "name": "freefire-mod-api",
+  "version": "1.0.0",
+  "description": "API POST untuk FreeFire Mod dengan HTML Tester",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
