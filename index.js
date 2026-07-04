@@ -12,10 +12,11 @@ module.exports = (req, res) => {
 
   // Hanya terima POST
   if (req.method !== 'POST') {
-    return res.status(200).send(JSON.stringify({
+    const response = {
       status: false,
       reason: "Use POST method"
-    }, null, 2));
+    };
+    return res.status(200).send(JSON.stringify(response, null, 2));
   }
 
   let body = '';
@@ -36,70 +37,14 @@ module.exports = (req, res) => {
         user_key = data.user_key;
         device = data.serial || data.device;
       } catch (e) {
-        // Kalau bukan JSON, parse sebagai query string
+        // Kalau bukan JSON, parse sebagai query string (form data)
         const params = new URLSearchParams(body);
         game = params.get('game');
         user_key = params.get('user_key');
         device = params.get('serial') || params.get('device');
       }
 
-      // Validasi
-      if (!game || !user_key || !device) {
-        return res.status(200).send(JSON.stringify({
-          status: false,
-          reason: "USER OR GAME NOT REGISTERED"
-        }, null, 2));
-      }
-
-      // Validasi game & user_key
-      if (game === 'FreeFire' && user_key === 'PINOKCRACK') {
-        const response = {
-          status: true,
-          data: {
-            real: "FreeFire-PINOKCRACK-5cdf1241eab6b815-" + device,
-            token: "3adb0a4f8709d86fc438f4994298aa3e",
-            modname: "VIP MOD",
-            mod_status: "Safe",
-            credit: "MOD STATUS :- 100% SAFE",
-            ESP: "on",
-            Item: "on",
-            AIM: "on",
-            SilentAim: "on",
-            BulletTrack: "on",
-            Floating: "on",
-            Memory: "on",
-            Setting: "on",
-            expired_date: "2029-12-31 23:59:59",
-            EXP: "2029-12-31 23:59:59",
-            exdate: "2029-12-31 23:59:59",
-            device: device,
-            rng: 1783141254
-          }
-        };
-        return res.status(200).send(JSON.stringify(response, null, 2));
-      } else {
-        return res.status(200).send(JSON.stringify({
-          status: false,
-          reason: "USER OR GAME NOT REGISTERED"
-        }, null, 2));
-      }
-
-    } catch (error) {
-      // Kirim error sebagai JSON
-      return res.status(200).send(JSON.stringify({
-        status: false,
-        reason: "Invalid request: " + error.message
-      }, null, 2));
-    }
-  });
-};        } else {
-          const data = querystring.parse(body);
-          game = data.game;
-          user_key = data.user_key;
-          device = data.serial || data.device;
-        }
-      }
-
+      // Validasi: cek apakah game, user_key, dan device ada
       if (!game || !user_key || !device) {
         const response = {
           status: false,
@@ -108,6 +53,7 @@ module.exports = (req, res) => {
         return res.status(200).send(JSON.stringify(response, null, 2));
       }
 
+      // Validasi data: game harus FreeFire, user_key PINOKCRACK
       if (game === 'FreeFire' && user_key === 'PINOKCRACK') {
         const response = {
           status: true,
@@ -140,70 +86,12 @@ module.exports = (req, res) => {
         };
         return res.status(200).send(JSON.stringify(response, null, 2));
       }
-
     } catch (error) {
       const response = {
         status: false,
-        reason: "Invalid request"
+        reason: "Invalid request: " + error.message
       };
       return res.status(200).send(JSON.stringify(response, null, 2));
-    }
-  });
-};        } else {
-          const data = querystring.parse(body);
-          game = data.game;
-          user_key = data.user_key;
-          device = data.serial || data.device;
-        }
-      }
-
-      // VALIDASI
-      if (!game || !user_key || !device) {
-        return res.status(200).json({
-          status: false,
-          reason: "USER OR GAME NOT REGISTERED"
-        });
-      }
-
-      // VALIDASI: game = FreeFire, user_key = PINOKCRACK
-      if (game === 'FreeFire' && user_key === 'PINOKCRACK') {
-        const response = {
-          status: true,
-          data: {
-            real: "FreeFire-PINOKCRACK-5cdf1241eab6b815-" + device,
-            token: "3adb0a4f8709d86fc438f4994298aa3e",
-            modname: "VIP MOD",
-            mod_status: "Safe",
-            credit: "MOD STATUS :- 100% SAFE",
-            ESP: "on",
-            Item: "on",
-            AIM: "on",
-            SilentAim: "on",
-            BulletTrack: "on",
-            Floating: "on",
-            Memory: "on",
-            Setting: "on",
-            expired_date: "2029-12-31 23:59:59",
-            EXP: "2029-12-31 23:59:59",
-            exdate: "2029-12-31 23:59:59",
-            device: device,
-            rng: 1783141254
-          }
-        };
-
-        return res.status(200).json(response);
-      } else {
-        return res.status(200).json({
-          status: false,
-          reason: "USER OR GAME NOT REGISTERED"
-        });
-      }
-
-    } catch (error) {
-      return res.status(200).json({
-        status: false,
-        reason: "Invalid request"
-      });
     }
   });
 };
